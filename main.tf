@@ -40,3 +40,18 @@ resource "aws_security_group" "kops_sg" {
     Name = "${local.project-name}-kops-sg"
   }
 }
+
+# Route 53 hosted zone
+data "aws_route53_zone" "route53_zone" {
+  name         = "tundeafod.click"
+  private_zone = "false"
+}
+
+#Create route 53 A record 
+resource "aws_route53_record" "kops-record" {
+  zone_id = data.aws_route53_zone.route53_zone.zone_id
+  name    = "tundeafod.click"
+  type    = "A"
+  records = []
+  ttl = 300
+}
