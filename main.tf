@@ -1,7 +1,3 @@
-provider "aws" {
-  region = "eu-west-1"
-  profile = ""
-}
 locals {
   project-name = "teamkops"
 }
@@ -11,7 +7,7 @@ module "vpc" {
   source = "terraform-aws-modules/vpc/aws"
   name = "my-vpc"
   cidr = "10.0.0.0/16"
-  azs             = ["eu-west-1a"]
+  azs             = ["eu-west-2a"]
   public_subnets  = ["10.0.1.0/24"]
   create_igw = true
   public_subnet_tags = {name = "${local.project-name}-pub-subnet"}
