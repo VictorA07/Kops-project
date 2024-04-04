@@ -6,17 +6,17 @@ resource "tls_private_key" "keypair" {
 
 resource "local_file" "keypair" {
   content         = tls_private_key.keypair.private_key_pem
-  filename        = "jenkins-keypair.pem"
+  filename        = "keypair.pem"
   file_permission = "600"
 }
 resource "aws_key_pair" "keypair" {
-  key_name   = "jenkins-keypair"
+  key_name   = "keypair"
   public_key = tls_private_key.keypair.public_key_openssh
 }
 
 # Create kops Server
 resource "aws_instance" "kops-server" {
-  ami                         = " "
+  ami                         = "ami-0b9932f4918a00c4f"
   instance_type               = "t2.medium"
   vpc_security_group_ids      = [aws_security_group.kops_sg.id]
   subnet_id                   = module.vpc.public_subnets[0]
