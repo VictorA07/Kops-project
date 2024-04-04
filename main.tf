@@ -52,6 +52,6 @@ resource "aws_route53_record" "kops-record" {
   zone_id = data.aws_route53_zone.route53_zone.zone_id
   name    = "tundeafod.click"
   type    = "A"
-  records = []
+  records = [aws_instance.kops-server.public_ip]
   ttl = 300
 }
