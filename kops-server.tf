@@ -16,7 +16,7 @@ resource "aws_key_pair" "keypair" {
 
 # Create kops Server
 resource "aws_instance" "kops-server" {
-  ami                         = " "
+  ami                         = "ami-0b9932f4918a00c4f"
   instance_type               = "t2.medium"
   vpc_security_group_ids      = [aws_security_group.kops_sg.id]
   subnet_id                   = module.vpc.public_subnets[0]
