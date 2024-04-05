@@ -6,11 +6,11 @@ resource "tls_private_key" "keypair" {
 
 resource "local_file" "keypair" {
   content         = tls_private_key.keypair.private_key_pem
-  filename        = "keypair.pem"
+  filename        = "kops-keypair.pem"
   file_permission = "600"
 }
 resource "aws_key_pair" "keypair" {
-  key_name   = "keypair"
+  key_name   = "kops-keypair"
   public_key = tls_private_key.keypair.public_key_openssh
 }
 
