@@ -4,10 +4,10 @@ provider "aws" {
 }
 
 resource "aws_s3_bucket" "s3b-team2" {
-  bucket        = "kops-server"
+  bucket        = "kops-server-sockshop"
   force_destroy = true
   tags = {
-    Name = "kops-sockshop"
+    Name = "kops-server-sockshop"
   }
 }
 

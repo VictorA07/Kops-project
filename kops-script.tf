@@ -1,5 +1,5 @@
 locals {
-script = <<-EOF
+  script = <<-EOF
 #!/bin/bash
 
 sudo apt update -y
@@ -28,14 +28,14 @@ sudo mv linux-amd64/helm /usr/local/bin
 rm helm-v3.9.3-linux-amd64.tar.gz
 
 #configuring the aws cli on your ubuntu user
-sudo su -c "aws configure set aws_access_key_id ${aws_iam_access_key.kops_access_key.id}" ubuntu
-sudo su -c "aws configure set aws_secret_access_key ${aws_iam_access_key.kops_access_key.secret}" ubuntu
+sudo su -c "aws configure set aws_access_key_id ${aws_iam_access_key.kop-user-access-key.id}" ubuntu
+sudo su -c "aws configure set aws_secret_access_key ${aws_iam_access_key.kop-user-access-key.secret}" ubuntu
 sudo su -c "aws configure set default.region eu-west-2" ubuntu
 sudo su -c "aws configure set default.output text" ubuntu
 
 #make access key for environment variable
-export AWS_ACCESS_KEY_ID=${aws_iam_access_key.kops_access_key.id}
-export AWS_SECRET_ACCESS_KEY=${aws_iam_access_key.kops_access_key.secret}
+export AWS_ACCESS_KEY_ID=${aws_iam_access_key.kop-user-access-key.id}
+export AWS_SECRET_ACCESS_KEY=${aws_iam_access_key.kop-user-access-key.secret}
 
 #create keypair 
 sudo su -c "ssh-keygen -t rsa -m PEM -f /home/ubuntu/.ssh/id_rsa -q -N ''" ubuntu
@@ -45,14 +45,14 @@ sleep 10
 
 #variable for bucket and domain names
 export NAME=tundeafod.click
-export KOPS_STATE_STORE=s3://team2-state123
+export KOPS_STATE_STORE=s3://kops-server-sockshop
 
 #execute kops commands to create our clusters
 sudo su -c "kops create cluster --cloud=aws \
   --zones=eu-west-2a,eu-west-2b,eu-west-2c \
   --control-plane-zones=eu-west-2a,eu-west-2b,eu-west-2c \
   --networking calico \
-  --state=s3://team2-state123 \
+  --state=s3://kops-server-sockshop \
   --node-count=3 \
   --topology private \
   --bastion \
@@ -64,9 +64,41 @@ sudo su -c "kops create cluster --cloud=aws \
   --yes" ubuntu
 
 #update the cluster
-sudo su -c "kops update cluster --name tundeafod.click --state=s3://team2-state123 --yes --admin" ubuntu
+sudo su -c "kops update cluster --name tundeafod.click --state=s3://kops-server-sockshop --yes --admin" ubuntu
 
 #To watch on your cluster creation 
-sudo su -c "kops validate cluster --state=s3://team2-state123 --wait 10m" ubuntu
+sudo su -c "kops validate cluster --state=s3://kops-server-sockshop --wait 10m" ubuntu
+
+sudo su -c "kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.7.0/aio/deploy/recommended.yaml" ubuntu
+
+sudo cat <<EOT> /home/ubuntu/admin-user.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: admin-user
+  namespace: kubernetes-dashboard
+EOT
+
+sudo su -c "kubectl apply -f /home/ubuntu/admin-user.yaml" ubuntu
+
+sudo cat <<EOT> /home/ubuntu/cluster-binding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: admin-user
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- kind: ServiceAccount
+  name: admin-user
+  namespace: kubernetes-dashboard
+EOT
+
+sudo su -c "kubectl apply -f /home/ubuntu/cluster-binding.yaml" ubuntu
+
+sudo su -c "kubectl -n kubernetes-dashboard create token admin-user > token" ubuntu
+
 EOF
 }

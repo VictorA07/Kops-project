@@ -4,6 +4,10 @@ resource "aws_iam_user" "kops-user" {
   name = "kops-user"
 }
 
+resource "aws_iam_access_key" "kop-user-access-key" {
+  user = aws_iam_user.kops-user.id
+}
+
 resource "aws_iam_group" "kops-group" {
   name = "kops-group"
 }
