@@ -1,6 +1,6 @@
 provider "aws" {
   region = "eu-west-2"
-  profile = "lead"
+  profile = "team1"
 }
 
 locals {

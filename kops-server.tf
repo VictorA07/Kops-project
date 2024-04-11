@@ -23,6 +23,6 @@ resource "aws_instance" "kops-server" {
   key_name                    = aws_key_pair.keypair.key_name
   user_data                   = local.script
   tags = {
-    name = "${local.project-name}-kops"
+    Name = "${local.project-name}-kops"
   }
 }
