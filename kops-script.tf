@@ -78,7 +78,7 @@ metadata:
   name: admin-user
   namespace: kubernetes-dashboard
 EOT
-sudo chown ubuntu:ubuntu admin-user.yaml 
+sudo chown ubuntu:ubuntu /home/ubuntu/admin-user.yaml 
 sudo su -c "kubectl apply -f /home/ubuntu/admin-user.yaml" ubuntu
 
 sudo cat <<EOT> /home/ubuntu/cluster-binding.yaml
@@ -96,14 +96,14 @@ subjects:
   namespace: kubernetes-dashboard
 EOT
 
-sudo chown ubuntu:ubuntu cluster-binding.yaml 
+sudo chown ubuntu:ubuntu /home/ubuntu/cluster-binding.yaml 
 sudo su -c "kubectl apply -f /home/ubuntu/cluster-binding.yaml" ubuntu
 
 sudo su -c "kubectl -n kubernetes-dashboard create token admin-user > token" ubuntu
 
 kubectl patch svc kubernetes-dashboard -n  kubernetes-dashboard -p '{"spec": {"type": "LoadBalancer"}}'
-helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-helm repo update
-helm install my-ingress-nginx ingress-nginx/ingress-nginx
+# helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+# helm repo update
+# helm install my-ingress-nginx ingress-nginx/ingress-nginx
 EOF
 }
