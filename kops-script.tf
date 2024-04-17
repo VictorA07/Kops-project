@@ -98,9 +98,9 @@ EOT
 
 sudo chown ubuntu:ubuntu /home/ubuntu/cluster-binding.yaml 
 sudo su -c "kubectl apply -f /home/ubuntu/cluster-binding.yaml" ubuntu
-
+sleep 60
 sudo su -c "kubectl -n kubernetes-dashboard create token admin-user > token" ubuntu
-
+sleep 60
 kubectl patch svc kubernetes-dashboard -n  kubernetes-dashboard -p '{"spec": {"type": "LoadBalancer"}}'
 # helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 # helm repo update
