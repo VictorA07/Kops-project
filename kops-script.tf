@@ -102,6 +102,16 @@ sleep 60
 sudo su -c "kubectl -n kubernetes-dashboard create token admin-user > token" ubuntu
 sleep 60
 kubectl patch svc kubernetes-dashboard -n  kubernetes-dashboard -p '{"spec": {"type": "LoadBalancer"}}'
+
+#creating argocd namespace
+kubectl create namespace argocd
+
+#deploy argocd into cluster
+sudo su -c "kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/v2.4.7/manifests/install.yaml" ubuntu
+
+#patch loadbalancer
+kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
+
 # helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 # helm repo update
 # helm install my-ingress-nginx ingress-nginx/ingress-nginx
