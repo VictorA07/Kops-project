@@ -98,10 +98,20 @@ EOT
 
 sudo chown ubuntu:ubuntu /home/ubuntu/cluster-binding.yaml 
 sudo su -c "kubectl apply -f /home/ubuntu/cluster-binding.yaml" ubuntu
-
-sudo su -c "kubectl -n kubernetes-dashboard create token admin-user > token" ubuntu
-
+sleep 60
+kubectl -n kubernetes-dashboard create token admin-user > token
+sleep 60
 kubectl patch svc kubernetes-dashboard -n  kubernetes-dashboard -p '{"spec": {"type": "LoadBalancer"}}'
+
+#creating argocd namespace
+kubectl create namespace argocd
+
+#deploy argocd into cluster
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/v2.4.7/manifests/install.yaml
+
+#patch loadbalancer
+kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
+
 # helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 # helm repo update
 # helm install my-ingress-nginx ingress-nginx/ingress-nginx
