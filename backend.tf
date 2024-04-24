@@ -5,6 +5,6 @@ terraform {
     dynamodb_table = "kops-sockshop"
     region = "eu-west-2"
     encrypt = true
-    profile = "team1"
+    # profile = "team1"
   }
 }
