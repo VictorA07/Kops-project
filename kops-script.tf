@@ -117,3 +117,6 @@ kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}
 # helm install my-ingress-nginx ingress-nginx/ingress-nginx
 EOF
 }
+
+
+# kops delete cluster --name tundeafod.click --state=s3://kops-server-sockshop --yes
