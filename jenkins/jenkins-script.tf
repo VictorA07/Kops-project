@@ -13,6 +13,7 @@ sudo systemctl daemon-reload
 sudo systemctl enable jenkins
 sudo systemctl start jenkins
 sudo usermod -aG jenkins ec2-user
+sudo usermod -aG root ec2-user
 sudo hostnamectl set-hostname jenkins
 EOF
 }
