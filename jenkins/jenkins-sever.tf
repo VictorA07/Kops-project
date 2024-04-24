@@ -1,8 +1,11 @@
+
+
+
+
 # Jenkins Ssecurity group
 resource "aws_security_group" "jenkins-sg" {
   name        = "jenkins-sg"
   description = "jenkins secyrity group"
-  vpc_id      = module.vpc.vpc.id
 
   # Inbound Rules
   ingress {
@@ -42,11 +45,25 @@ resource "aws_security_group" "jenkins-sg" {
   }
 }
 
+# Creating keypair
+resource "tls_private_key" "keypair" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
+resource "local_file" "keypair" {
+  content         = tls_private_key.keypair.private_key_pem
+  filename        = "jenkins-keypair.pem"
+  file_permission = "600"
+}
+resource "aws_key_pair" "keypair" {
+  key_name   = "jenkins-keypair"
+  public_key = tls_private_key.keypair.public_key_openssh
+}
+
 resource "aws_instance" "jenkins-server" {
-  ami = "ami-05f804247228852a3"
+  ami = "ami-035cecbff25e0d91e"
   instance_type = "t2.medium"
   vpc_security_group_ids = [aws_security_group.jenkins-sg.id]
-  subnet_id = module.publicsubnet[0].id
   key_name = aws_key_pair.keypair.id
   associate_public_ip_address = true
   iam_instance_profile = aws_iam_instance_profile.jenkins-role.id
