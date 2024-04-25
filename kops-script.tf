@@ -99,24 +99,37 @@ EOT
 sudo chown ubuntu:ubuntu /home/ubuntu/cluster-binding.yaml 
 sudo su -c "kubectl apply -f /home/ubuntu/cluster-binding.yaml" ubuntu
 sleep 60
-kubectl -n kubernetes-dashboard create token admin-user > token
+sudo su -c "kubectl -n kubernetes-dashboard create token admin-user > /home/ubuntu/token" ubuntu
+
 sleep 60
-kubectl patch svc kubernetes-dashboard -n  kubernetes-dashboard -p '{"spec": {"type": "LoadBalancer"}}'
+
+sudo su -c "kubectl patch svc kubernetes-dashboard -n  kubernetes-dashboard -p '{"spec": {"type": "LoadBalancer"}}'" ubuntu
 
 #creating argocd namespace
-kubectl create namespace argocd
+sudo su -c "kubectl create namespace argocd" ubuntu
 
 #deploy argocd into cluster
-kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/v2.4.7/manifests/install.yaml
+sudo su -c "kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/v2.4.7/manifests/install.yaml" ubuntu
 
 #patch loadbalancer
-kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
+sudo su -c "kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'" ubuntu
+
+sudo su -c "kubectl create namespace monitoring" ubuntu
+sudo su -c "helm repo add prometheus-community https://prometheus-community.github.io/helm-charts" ubuntu
+sudo su -c "helm repo update" ubuntu
+sudo su -c "helm install prometheus-stack prometheus-community/kube-prometheus-stack --namespace monitoring" ubuntu
+
+#sudo su -c "kubectl patch svc  -n monitoring -p '{"spec": {"type": "LoadBalancer"}}'" ubuntu
+
+#sudo su -c "kubectl patch svc  -n monitoring -p '{"spec": {"type": "LoadBalancer"}}'" ubuntu
+
 
 # helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 # helm repo update
 # helm install my-ingress-nginx ingress-nginx/ingress-nginx
 EOF
 }
+
 
 
 # kops delete cluster --name tundeafod.click --state=s3://kops-server-sockshop --yes
