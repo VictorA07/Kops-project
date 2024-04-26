@@ -116,14 +116,14 @@ sleep 40
 sudo su -c "kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath=\"{.data.password}\" | base64 -d > /home/ubuntu/argopassword" ubuntu
 
 sudo su -c "kubectl create namespace monitoring" ubuntu
-sudo su -c "$ helm repo add prometheus-community https://prometheus-community.github.io/helm-charts" ubuntu
+sudo su -c "helm repo add prometheus-community https://prometheus-community.github.io/helm-charts" ubuntu
 sudo su -c "helm repo update" ubuntu
-sudo su -c "$ helm install stable prometheus-community/kube-prometheus-stack --namespace monitoring" ubuntu
+sudo su -c "helm install prometheus-stack prometheus-community/kube-prometheus-stack --namespace monitoring" ubuntu
 
 
-sudo su -c "kubectl patch svc stable-kube-prometheus-sta-prometheus -n monitoring -p '{\"spec\": {\"type\": \"LoadBalancer\"}}'" ubuntu
+sudo su -c "kubectl patch svc prometheus-stack-kube-prom-operator -n monitoring -p '{\"spec\": {\"type\": \"LoadBalancer\"}}'" ubuntu
 
-sudo su -c "kubectl patch svc stable-grafana -n monitoring -p '{\"spec\": {\"type\": \"LoadBalancer\"}}'" ubuntu
+sudo su -c "kubectl patch svc prometheus-stack-grafana -n monitoring -p '{\"spec\": {\"type\": \"LoadBalancer\"}}'" ubuntu
 
 
 # helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
