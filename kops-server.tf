@@ -21,7 +21,7 @@ resource "aws_instance" "kops-server" {
   subnet_id                   = module.vpc.public_subnets[0]
   associate_public_ip_address = true
   key_name                    = aws_key_pair.keypair.key_name
-  user_data                   = local.script
+  user_data                   = local.kops-script
   tags = {
     Name = "${local.project-name}-kops"
   }
