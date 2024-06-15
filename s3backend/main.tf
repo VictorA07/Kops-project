@@ -1,6 +1,6 @@
 provider "aws" {
   region  = "eu-west-2"
-  profile = "team1"
+  profile = "lead"
 }
 
 resource "aws_s3_bucket" "s3b-team2" {

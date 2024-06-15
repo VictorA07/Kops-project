@@ -54,3 +54,4 @@ spec:
                 port:
                   number: 80
             path: /
+            kubectl patch svc front-end -n  sock-shop -p '{"spec": {"type":"ClusterIP"}}'
