@@ -44,7 +44,7 @@ sudo su -c "ssh-keygen -t rsa -m PEM -f /home/ubuntu/.ssh/id_rsa -q -N ''" ubunt
 sleep 10
 
 #variable for bucket and domain names
-export NAME=tundeafod.click
+export NAME=greatminds.sbs
 export KOPS_STATE_STORE=s3://kops-server-sockshop
 
 #execute kops commands to create our clusters
@@ -60,11 +60,11 @@ sudo su -c "kops create cluster --cloud=aws \
   --node-size=t3.medium \
   --control-plane-size=t3.medium \
   --control-plane-count=3 \
-  --name=tundeafod.click \
+  --name=greatminds.sbs \
   --yes" ubuntu
 
 #update the cluster
-sudo su -c "kops update cluster --name tundeafod.click --state=s3://kops-server-sockshop --yes --admin" ubuntu
+sudo su -c "kops update cluster --name greatminds.sbs --state=s3://kops-server-sockshop --yes --admin" ubuntu
 
 #To watch on your cluster creation 
 sudo su -c "kops validate cluster --state=s3://kops-server-sockshop --wait 10m" ubuntu
@@ -134,6 +134,6 @@ EOF
 
 
 
-# kops delete cluster --name tundeafod.click --state=s3://kops-server-sockshop --yes
+# kops delete cluster --name greatminds.sbs --state=s3://kops-server-sockshop --yes
 
 # sudo su -c "kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath=\"{.data.password}\" | base64 -d > /home/ubuntu/argopassword" ubuntu

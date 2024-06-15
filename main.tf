@@ -3,7 +3,7 @@ module "vpc" {
   source = "terraform-aws-modules/vpc/aws"
   name = "my-vpc"
   cidr = "10.0.0.0/16"
-  azs             = ["eu-west-2a"]
+  azs             = ["eu-west-3a"]
   public_subnets  = ["10.0.1.0/24"]
   create_igw = true
   public_subnet_tags = {name = "${local.project-name}-pub-subnet"}
@@ -39,14 +39,14 @@ resource "aws_security_group" "kops_sg" {
 
 # Route 53 hosted zone
 data "aws_route53_zone" "route53_zone" {
-  name         = "tundeafod.click"
+  name         = "greatminds.sbs"
   private_zone = "false"
 }
 
 #Create route 53 A record 
 resource "aws_route53_record" "kops-record" {
   zone_id = data.aws_route53_zone.route53_zone.zone_id
-  name    = "tundeafod.click"
+  name    = "greatminds.sbs"
   type    = "A"
   records = [aws_instance.kops-server.public_ip]
   ttl = 300

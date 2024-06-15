@@ -3,8 +3,8 @@
 
 
 # Jenkins Ssecurity group
-resource "aws_security_group" "jenkins-sg" {
-  name        = "jenkins-sg"
+resource "aws_security_group" "jenkinskop-sg" {
+  name        = "jenkinskop-sg"
   description = "jenkins secyrity group"
 
   # Inbound Rules
@@ -41,30 +41,30 @@ resource "aws_security_group" "jenkins-sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   tags = {
-    Name = "jenkins-sg"
+    Name = "jenkinskop-sg"
   }
 }
 
 # Creating keypair
-resource "tls_private_key" "keypair" {
+resource "tls_private_key" "jen-keypair" {
   algorithm = "RSA"
   rsa_bits  = 4096
 }
 resource "local_file" "keypair" {
-  content         = tls_private_key.keypair.private_key_pem
+  content         = tls_private_key.jen-keypair.private_key_pem
   filename        = "jenkins-keypair.pem"
   file_permission = "600"
 }
-resource "aws_key_pair" "keypair" {
+resource "aws_key_pair" "keypairkop" {
   key_name   = "jenkins-keypair"
-  public_key = tls_private_key.keypair.public_key_openssh
+  public_key = tls_private_key.jen-keypair.public_key_openssh
 }
 
 resource "aws_instance" "jenkins-server" {
   ami = "ami-035cecbff25e0d91e"
   instance_type = "t2.medium"
-  vpc_security_group_ids = [aws_security_group.jenkins-sg.id]
-  key_name = aws_key_pair.keypair.id
+  vpc_security_group_ids = [aws_security_group.jenkinskop-sg.id]
+  key_name = aws_key_pair.keypairkop.id
   associate_public_ip_address = true
   iam_instance_profile = aws_iam_instance_profile.jenkins-role.id
   user_data = local.script
